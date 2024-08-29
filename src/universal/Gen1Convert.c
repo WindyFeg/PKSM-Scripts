@@ -3,82 +3,100 @@
 #include <stdlib.h>
 #include <string.h>
 
-void convert_to_pokemon_red(enum Generation gen, int box, int slot)
+void convert_bank3_to_gen1(int box, int slot)
 {
+    enum Generation gen = GEN_THREE;
 
-    char *pkm_temp_gen1 = bank_get_pkx(&gen, 0, 0);
-    if (pkm_temp_gen1 == NULL)
+    char field_id_buffer[50];
+    char *pkm_g1 = malloc(pkx_box_size(GEN_ONE));
+    char *pkm_g3 = bank_get_pkx(&gen, box, slot);
+
+    if (pkm_g3 == NULL || pkm_g1 == NULL)
     {
         gui_warn("Failed to allocate memory for temporary Pokémon data.");
         return;
     }
 
-    // Retrieve the Pokémon data from the bank
-    char *pkm_data = bank_get_pkx(&gen, box, slot);
-    char field_id_buffer[50];
+    // pkx_decrypt(pkm_g3, GEN_THREE, 0);
 
-    if (pkm_data == NULL)
+    //* Generate a Gen 1 Pokémon
+    pkx_generate(pkm_g1,
+                 pkx_get_value(
+                     pkm_g3,
+                     GEN_THREE,
+                     SPECIES));
+
+    for (int i_field = 1; i_field <= 44; i_field++)
     {
-        gui_warn("Failed to retrieve Pokémon data.");
-        free(pkm_temp_gen1);
-        return;
-    }
+        //* Skip 2 arg[] fields
+        // Moves
+        if (i_field == MOVE)
+        {
+            for (int m = 0; m < 4; m++)
+            {
+                if (!pkx_get_value(pkm_g3, GEN_THREE, MOVE, m))
+                {
+                    continue;
+                }
 
-    pkx_decrypt(pkm_data, gen, 0);
-    pkx_decrypt(pkm_temp_gen1, gen, 0);
+                pkx_set_value(pkm_g1,
+                              GEN_ONE,
+                              MOVE,
+                              m,
+                              pkx_get_value(
+                                  pkm_g3,
+                                  GEN_THREE,
+                                  MOVE,
+                                  m));
+            }
 
-    for (int i_field = 0; i_field <= 44; i_field++)
-    {
-        if (i_field == 6 || i_field == 37 || i_field == 19 | i_field == 38)
+            continue;
+        }
+
+        // pokerus
+        if (i_field == POKERUS)
+        {
+            // i_field = 11;
+
+            continue;
+        }
+
+        // PP
+        if (i_field == PP)
+        {
+            // i_field = 11;
+
+            continue;
+        }
+
+        // PP Ups
+        if (i_field == PP_UPS)
+        {
+            // i_field = 11;
+
+            continue;
+        }
+
+        if (!pkx_get_value(pkm_g3, GEN_THREE, i_field))
         {
             continue;
         }
 
-        if (!pkx_get_value(pkm_temp_gen1, gen, i_field))
-        {
-            continue;
-        }
-
-        snprintf(field_id_buffer, sizeof(field_id_buffer), "Convert : %d", i_field);
-
-        gui_warn(field_id_buffer);
-
-        int i_field_value = pkx_get_value(pkm_data, gen, i_field);
-        pkx_set_value(pkm_temp_gen1, gen, i_field, i_field_value);
+        pkx_set_value(pkm_g1,
+                      GEN_ONE,
+                      i_field,
+                      pkx_get_value(
+                          pkm_g3,
+                          GEN_THREE,
+                          i_field));
     }
 
-    pkx_encrypt(pkm_data, gen, 0);
-    pkx_encrypt(pkm_temp_gen1, gen, 0);
+    // pkx_encrypt(pkm_g1, GEN_ONE, 0);
 
-    bank_inject_pkx(pkm_temp_gen1, gen, 0, 10);
+    sav_inject_pkx(pkm_g1, GEN_ONE, 0, 0, 0);
 
-    free(pkm_temp_gen1);
-
-    gui_warn("Pokémon is now ready to be transferred to Gen 1!");
-}
-
-void convert_bank_to_gen1()
-{
-    enum Generation gen = GEN_ONE;
-    char *pkm = malloc(pkx_box_size(gen));
-
-    if (pkm == NULL)
-    {
-        gui_warn("Failed to allocate memory for Pokémon data.");
-        return;
-    }
-
-    pkx_generate(pkm, 1);
-
-    pkx_set_value(pkm, GEN_ONE, SHINY, 1);
-    pkx_set_value(pkm, GEN_ONE, OT_NAME, "PKSM");
-    pkx_set_value(pkm, GEN_ONE, MOVE, 0, 100);
-
-    pkx_encrypt(pkm, gen, 0);
-
-    sav_inject_pkx(pkm, gen, 0, 0, 0);
-
-    free(pkm);
+    free(pkm_g1);
+    free(pkm_g3);
 
     gui_warn("Pokémon is converted to Gen 1!");
 }
@@ -99,13 +117,7 @@ int main(int argc, char **argv)
         "PK1", "https://cdn.sigkill.tech/dex/pk1.txt", // contains 1-151
     };
 
-    // enum Generation gen = GEN_ONE;
-    // int box = 0;
-    // int slot = 4;
-
-    // convert_to_pokemon_red(gen, box, slot);
-
-    convert_bank_to_gen1();
+    convert_bank3_to_gen1(0, 10);
 
     return 0;
 }

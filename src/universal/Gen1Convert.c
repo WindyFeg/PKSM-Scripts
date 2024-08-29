@@ -28,56 +28,33 @@ void convert_bank3_to_gen1(int box, int slot)
 
     for (int i_field = 1; i_field <= 44; i_field++)
     {
-        //* Skip 2 arg[] fields
-        // Moves
-        if (i_field == MOVE)
+        snprintf(field_id_buffer, sizeof(field_id_buffer), "Convert KPX Field : %d/44", i_field);
+        gui_warn(field_id_buffer);
+
+        if (i_field == MOVE || i_field == PP || i_field == PP_UPS)
         {
             for (int m = 0; m < 4; m++)
             {
-                if (!pkx_get_value(pkm_g3, GEN_THREE, MOVE, m))
+                if (!pkx_get_value(pkm_g3, GEN_THREE, i_field, m))
                 {
                     continue;
                 }
 
                 pkx_set_value(pkm_g1,
                               GEN_ONE,
-                              MOVE,
+                              i_field,
                               m,
                               pkx_get_value(
                                   pkm_g3,
                                   GEN_THREE,
-                                  MOVE,
+                                  i_field,
                                   m));
             }
 
             continue;
         }
 
-        // pokerus
-        if (i_field == POKERUS)
-        {
-            // i_field = 11;
-
-            continue;
-        }
-
-        // PP
-        if (i_field == PP)
-        {
-            // i_field = 11;
-
-            continue;
-        }
-
-        // PP Ups
-        if (i_field == PP_UPS)
-        {
-            // i_field = 11;
-
-            continue;
-        }
-
-        if (!pkx_get_value(pkm_g3, GEN_THREE, i_field))
+        if (!pkx_get_value(pkm_g3, GEN_THREE, i_field) || i_field == POKERUS)
         {
             continue;
         }
@@ -89,11 +66,12 @@ void convert_bank3_to_gen1(int box, int slot)
                           pkm_g3,
                           GEN_THREE,
                           i_field));
+
+        //*Encrypt the Gen 1 Pokémon
+        pkx_encrypt(pkm_g1, GEN_ONE, 0);
+
+        sav_inject_pkx(pkm_g1, GEN_ONE, 0, 0, 0);
     }
-
-    // pkx_encrypt(pkm_g1, GEN_ONE, 0);
-
-    sav_inject_pkx(pkm_g1, GEN_ONE, 0, 0, 0);
 
     free(pkm_g1);
     free(pkm_g3);
@@ -117,7 +95,10 @@ int main(int argc, char **argv)
         "PK1", "https://cdn.sigkill.tech/dex/pk1.txt", // contains 1-151
     };
 
-    convert_bank3_to_gen1(0, 10);
+    unsigned int input;
+    gui_numpad(&input, "From left to right, top to bottom, count from 0", 30);
+
+    convert_bank3_to_gen1(0, input);
 
     return 0;
 }

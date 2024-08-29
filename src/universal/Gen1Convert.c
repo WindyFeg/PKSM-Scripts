@@ -68,11 +68,12 @@ void convert_bank3_to_gen1(int box, int slot)
                           i_field));
 
         //*Encrypt the Gen 1 Pokémon
+        // 7 8 10 11 12 14 15 16 17 20 21 22 23 24 25 33 34 35 42 44
+
         pkx_encrypt(pkm_g1, GEN_ONE, 0);
 
         sav_inject_pkx(pkm_g1, GEN_ONE, 0, 0, 0);
     }
-
     free(pkm_g1);
     free(pkm_g3);
 

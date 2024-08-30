@@ -134,6 +134,19 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
                 }
             }
             break;
+        case ITEM: // item: 0 -> 375
+            int item_id = pkx_get_value(pkm_g3, target_gen, ITEM);
+            pkx_set_value(pkm_g1,
+                          GEN_ONE,
+                          ITEM, item_id > 255 ? 0 : item_id);
+            break;
+        case BALL: // ball: 0 -> 4
+            int ball_id = pkx_get_value(pkm_g3, target_gen, BALL);
+            pkx_set_value(pkm_g1,
+                          GEN_ONE,
+                          BALL, ball_id > 5 ? 3 : ball_id);
+            break;
+
         case IV_HP:
             break;
         case IV_ATK:

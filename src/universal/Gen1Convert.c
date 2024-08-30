@@ -39,6 +39,17 @@ void convert_bank3_to_gen1(int box, int slot)
                           0);
         }
 
+        if (i_field == LEVEL)
+        {
+            pkx_set_value(pkm_g1,
+                          GEN_ONE,
+                          LEVEL,
+                          pkx_get_value(
+                              pkm_g3,
+                              GEN_THREE,
+                              LEVEL));
+        }
+
         if (i_field == MOVE || i_field == PP || i_field == PP_UPS)
         {
             for (int m = 0; m < 4; m++)
@@ -62,7 +73,7 @@ void convert_bank3_to_gen1(int box, int slot)
             continue;
         }
 
-        if (!pkx_get_value(pkm_g3, GEN_THREE, i_field) || i_field == POKERUS)
+        if (!pkx_get_value(pkm_g3, GEN_THREE, i_field) || i_field == POKERUS || i_field == BALL)
         {
             continue;
         }

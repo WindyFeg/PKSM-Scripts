@@ -31,6 +31,14 @@ void convert_bank3_to_gen1(int box, int slot)
         snprintf(field_id_buffer, sizeof(field_id_buffer), "Convert KPX Field : %d/44", i_field);
         gui_warn(field_id_buffer);
 
+        if (i_field == BALL)
+        {
+            pkx_set_value(pkm_g1,
+                          GEN_ONE,
+                          BALL,
+                          0);
+        }
+
         if (i_field == MOVE || i_field == PP || i_field == PP_UPS)
         {
             for (int m = 0; m < 4; m++)

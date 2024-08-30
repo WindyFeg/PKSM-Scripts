@@ -29,7 +29,8 @@ void convert_bank3_to_gen1(int box, int slot)
 
     for (int i_field = 1; i_field <= 44; i_field++)
     {
-        snprintf(field_id_buffer, sizeof(field_id_buffer), "Convert KPX Field : %d/44", i_field);
+
+        snprintf(field_id_buffer, sizeof(field_id_buffer), "Convert PKX Field : %d/44", i_field);
         gui_warn(field_id_buffer);
 
         switch (i_field)
@@ -41,7 +42,8 @@ void convert_bank3_to_gen1(int box, int slot)
             {
                 if (!pkx_get_value(pkm_g3, GEN_THREE, i_field, m))
                 {
-                    continue;
+                    is_inject = false;
+                    break;
                 }
 
                 pkx_set_value(pkm_g1,
@@ -60,12 +62,14 @@ void convert_bank3_to_gen1(int box, int slot)
         case LEVEL:
             pkx_set_value(pkm_g1,
                           GEN_ONE,
-                          LEVEL, 10);
+                          LEVEL, pkx_get_value(pkm_g3, GEN_THREE, LEVEL));
+            is_inject = true;
             break;
 
         case POKERUS:
         case BALL:
         case ABILITY:
+
             is_inject = false;
             break;
 
@@ -83,6 +87,8 @@ void convert_bank3_to_gen1(int box, int slot)
                               pkm_g3,
                               GEN_THREE,
                               i_field));
+
+            is_inject = true;
             break;
         }
         //*Encrypt the Gen 1 Pokémon
@@ -91,15 +97,15 @@ void convert_bank3_to_gen1(int box, int slot)
         // fixed:
         //       - continue: 7, 10
         //       - change value:
-        // if (is_inject)
-        // {
-        //     gui_splash("Injecting ...");
-        // }
-        // else
-        // {
-        //     gui_splash("Skipping ...");
-        is_inject = true;
-        // }
+
+        if (is_inject)
+        {
+            gui_splash("Injecting ...");
+        }
+        else
+        {
+            gui_splash("Skipping ...");
+        }
     }
     sav_inject_pkx(pkm_g1, GEN_ONE, 0, 0, 0);
 

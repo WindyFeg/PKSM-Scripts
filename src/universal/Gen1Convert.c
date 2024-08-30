@@ -5,6 +5,15 @@
 #include <string.h>
 #include <stdbool.h>
 
+bool is_odd(int num)
+{
+    if (num % 2 == 0)
+    {
+        return false;
+    }
+    return true;
+}
+
 void convert_bank3_to_gen1(int box, int slot)
 {
     enum Generation gen = GEN_THREE;
@@ -28,6 +37,63 @@ void convert_bank3_to_gen1(int box, int slot)
                      GEN_THREE,
                      SPECIES));
 
+    //! IV Conversion calculation
+    //* Determine IV (Max of of Sp.Atk/Sp.Def divide by 2)
+    //* Speed divide by 2
+    //* Attack, Defense divide by 2
+    //* Check HP/2 (Check who ood)
+    //* Check current HP (Check who ood)
+    //* Make Current odd the same as HP odd
+    int pkm_g3_spAtk,
+        pkm_g3_spDef,
+        pkm_g3_speed,
+        pkm_g3_atk,
+        pkm_g3_def,
+        pkm_g3_hp,
+        pkm_g1_spAtk,
+        pkm_g1_spDef,
+        pkm_g1_speed,
+        pkm_g1_atk,
+        pkm_g1_def,
+        pkm_g1_hp;
+    int g3_hp_bin[4] = {0, 0, 0, 0};
+    int g1_hp_bin[4] = {0, 0, 0, 0};
+
+    pkm_g3_spAtk = floor(pkx_get_value(pkm_g3, GEN_THREE, IV_SPATK) / 2);
+    pkm_g3_spDef = floor(pkx_get_value(pkm_g3, GEN_THREE, IV_SPDEF) / 2);
+    pkm_g3_speed = floor(pkx_get_value(pkm_g3, GEN_THREE, IV_SPEED) / 2);
+    pkm_g3_atk = floor(pkx_get_value(pkm_g3, GEN_THREE, IV_ATK) / 2);
+    pkm_g3_def = floor(pkx_get_value(pkm_g3, GEN_THREE, IV_DEF) / 2);
+    pkm_g3_hp = floor(pkx_get_value(pkm_g3, GEN_THREE, IV_HP) / 2);
+
+    pkm_g1_spAtk = pkm_g3_spAtk > pkm_g3_spDef ? pkm_g3_spAtk : pkm_g3_spDef;
+    pkm_g1_spDef = pkm_g1_spAtk;
+    pkm_g1_speed = pkm_g3_speed;
+    pkm_g1_atk = pkm_g3_atk;
+    pkm_g1_def = pkm_g3_def;
+
+    g3_hp_bin[0] = (pkm_g3_hp >> 3) & 1;
+    g3_hp_bin[1] = (pkm_g3_hp >> 2) & 1;
+    g3_hp_bin[2] = (pkm_g3_hp >> 1) & 1;
+    g3_hp_bin[3] = pkm_g3_hp & 1;
+
+    g1_hp_bin[0] = pkm_g1_atk % 2 == 0 ? 0 : 1;
+    g1_hp_bin[1] = pkm_g1_def % 2 == 0 ? 0 : 1;
+    g1_hp_bin[2] = pkm_g1_speed % 2 == 0 ? 0 : 1;
+    g1_hp_bin[3] = pkm_g1_spAtk % 2 == 0 ? 0 : 1;
+
+    for (int i = 0; i < 4; i++)
+    {
+        g1_hp_bin[i] = g3_hp_bin[i] - g1_hp_bin[i];
+    }
+
+    pkm_g1_atk = pkm_g1_atk + g1_hp_bin[0];
+    pkm_g1_def = pkm_g1_def + g1_hp_bin[1];
+    pkm_g1_speed = pkm_g1_speed + g1_hp_bin[2];
+    pkm_g1_spAtk = pkm_g1_spAtk + g1_hp_bin[3];
+    pkm_g1_spDef = pkm_g1_spDef + g1_hp_bin[3];
+
+    //! All data conversion
     for (int i_field = 1; i_field <= 44; i_field++)
     {
 
@@ -75,20 +141,21 @@ void convert_bank3_to_gen1(int box, int slot)
             break;
 
         case IV_HP:
+            break;
         case IV_ATK:
+            pkx_set_value(pkm_g1, GEN_ONE, IV_ATK, pkm_g1_atk);
+            break;
         case IV_DEF:
+            pkx_set_value(pkm_g1, GEN_ONE, IV_DEF, pkm_g1_def);
+            break;
         case IV_SPATK:
+            pkx_set_value(pkm_g1, GEN_ONE, IV_SPATK, pkm_g1_spAtk);
+            break;
         case IV_SPDEF:
+            pkx_set_value(pkm_g1, GEN_ONE, IV_SPDEF, pkm_g1_spDef);
+            break;
         case IV_SPEED:
-            pkx_set_value(pkm_g1,
-                          GEN_ONE,
-                          i_field,
-                          floor(pkx_get_value(
-                                    pkm_g3,
-                                    GEN_THREE,
-                                    i_field) /
-                                2));
-
+            pkx_set_value(pkm_g1, GEN_ONE, IV_SPEED, pkm_g1_speed);
             break;
 
         default: // only 1 value in field

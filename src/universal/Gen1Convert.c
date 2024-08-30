@@ -1,6 +1,7 @@
 #include <pksm.h>
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
 #include <string.h>
 #include <stdbool.h>
 
@@ -30,22 +31,17 @@ void convert_bank3_to_gen1(int box, int slot)
     for (int i_field = 1; i_field <= 44; i_field++)
     {
 
-        // snprintf(field_id_buffer, sizeof(field_id_buffer), "Convert PKX Field : %d/44", i_field);
-        // gui_warn(field_id_buffer);
-
         switch (i_field)
         {
         case MOVE: // special case (two values in field)
                    // move: 0 -> 165
-
-        case PP: // always in range 0 -> 40
+        case PP:   // always in range 0 -> 40
         case PP_UPS:
 
             for (int m = 0; m < 4; m++)
             {
                 if (!pkx_get_value(pkm_g3, GEN_THREE, i_field, m))
                 {
-                    is_inject = false;
                     break;
                 }
 
@@ -60,7 +56,6 @@ void convert_bank3_to_gen1(int box, int slot)
                               i_field,
                               m, skill_id > 165 ? 0 : skill_id);
             }
-            is_inject = false;
             break;
 
         case POKERUS: // field that gen_1 or both gen1 & gen3 doesn't have
@@ -77,6 +72,7 @@ void convert_bank3_to_gen1(int box, int slot)
         case NATURE:
         case MET_LEVEL:
         case ORIGINAL_GAME:
+            break;
 
         case IV_HP:
         case IV_ATK:
@@ -84,14 +80,20 @@ void convert_bank3_to_gen1(int box, int slot)
         case IV_SPATK:
         case IV_SPDEF:
         case IV_SPEED:
+            pkx_set_value(pkm_g1,
+                          GEN_ONE,
+                          i_field,
+                          floor(pkx_get_value(
+                                    pkm_g3,
+                                    GEN_THREE,
+                                    i_field) /
+                                2));
 
-            is_inject = false;
             break;
 
         default: // only 1 value in field
             if (!pkx_get_value(pkm_g3, GEN_THREE, i_field))
             {
-                is_inject = false;
                 break;
             }
 
@@ -103,23 +105,7 @@ void convert_bank3_to_gen1(int box, int slot)
                               GEN_THREE,
                               i_field));
 
-            is_inject = true;
             break;
-        }
-        //*Encrypt the Gen 1 Pokémon
-        // 7 8 10 11 12 14 15 16 17 20 21 22 23 24 25 33 34 35 42 44
-
-        // fixed:
-        //       - continue: 7, 10, 20, 21, 22, 23, 24, 25, 35, 42, 44
-        //       - change value:
-
-        if (is_inject)
-        {
-            gui_splash("Injecting ...");
-        }
-        else
-        {
-            gui_splash("Skipping ...");
         }
     }
     sav_inject_pkx(pkm_g1, GEN_ONE, 0, 0, 0);

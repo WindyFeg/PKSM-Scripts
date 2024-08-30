@@ -14,13 +14,13 @@ bool is_odd(int num)
     return true;
 }
 
-void convert_bank3_to_gen1(int box, int slot)
+void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slot)
 {
     enum Generation gen = GEN_THREE;
 
     char field_id_buffer[50];
     char *pkm_g1 = malloc(pkx_box_size(GEN_ONE));
-    char *pkm_g3 = bank_get_pkx(&gen, box, slot);
+    char *pkm_g3 = bank_get_pkx(&gen, bank_box, bank_slot);
     bool is_inject = true;
 
     if (pkm_g3 == NULL || pkm_g1 == NULL)
@@ -163,7 +163,7 @@ void convert_bank3_to_gen1(int box, int slot)
         }
     }
 
-    sav_inject_pkx(pkm_g1, GEN_ONE, 0, 0, 0);
+    sav_inject_pkx(pkm_g1, GEN_ONE, sav_box, sav_slot, 0);
 
     free(pkm_g1);
     free(pkm_g3);
@@ -188,10 +188,27 @@ int main(int argc, char **argv)
         "PK1", "https://cdn.sigkill.tech/dex/pk1.txt", // contains 1-151
     };
 
-    unsigned int input;
-    gui_numpad(&input, "From left to right, top to bottom, count from 0", 30);
+    gui_warn("This script will convert entire Bank 1 (Firered - G3) to Gen 1 (Red/Blue - G1).");
 
-    convert_bank3_to_gen1(0, input);
+    int bank_current_box = 0;
+    int bank_current_slot = 0;
+
+    for (int sav_box = 0; sav_box < 2; sav_box++)
+    {
+        for (int sav_slot = 0; sav_slot < 20; sav_slot++)
+        {
+            convert_bank3_to_gen1(
+                bank_current_box,
+                bank_current_slot,
+                sav_box,
+                sav_slot);
+
+            bank_current_slot++;
+
+            if (bank_current_slot == 30)
+                return 0;
+        }
+    }
 
     return 0;
 }

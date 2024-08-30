@@ -72,8 +72,7 @@ void convert_bank3_to_gen1(int box, int slot)
         case EGG_YEAR:
         case MET_DAY:
         case MET_MONTH:
-        case MET_YEAR:
-        case NATURE:
+        case MET_YEAR case NATURE:
         case MET_LEVEL:
         case ORIGINAL_GAME:
             is_inject = false;
@@ -101,7 +100,6 @@ void convert_bank3_to_gen1(int box, int slot)
         // fixed:
         //       - continue: 7, 10, 20, 21, 22, 23, 24, 25, 35, 42, 44
         //       - change value:
-
         // if (is_inject)
         // {
         //     gui_splash("Injecting ...");

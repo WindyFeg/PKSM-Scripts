@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 void convert_bank3_to_gen1(int box, int slot)
 {
@@ -10,6 +11,7 @@ void convert_bank3_to_gen1(int box, int slot)
     char field_id_buffer[50];
     char *pkm_g1 = malloc(pkx_box_size(GEN_ONE));
     char *pkm_g3 = bank_get_pkx(&gen, box, slot);
+    bool is_inject = true;
 
     if (pkm_g3 == NULL || pkm_g1 == NULL)
     {
@@ -32,7 +34,7 @@ void convert_bank3_to_gen1(int box, int slot)
 
         switch (i_field)
         {
-        case MOVE:
+        case MOVE: // special case (two values in field)
         case PP:
         case PP_UPS:
             for (int m = 0; m < 4; m++)
@@ -52,6 +54,7 @@ void convert_bank3_to_gen1(int box, int slot)
                                   i_field,
                                   m));
             }
+            is_inject = false;
             break;
 
         case LEVEL:
@@ -60,15 +63,26 @@ void convert_bank3_to_gen1(int box, int slot)
                           LEVEL, 10);
             break;
 
-        case POKERUS:
+        case POKERUS: // field that gen_1 or both gen1 & gen3 doesn't have
         case BALL:
         case ABILITY:
-            // Skip these fields
-            continue;
+        case NICKNAME:
+        case EGG_DAY:
+        case EGG_MONTH:
+        case EGG_YEAR:
+        case MET_DAY:
+        case MET_MONTH:
+        case MET_YEAR:
+        case NATURE:
+        case MET_LEVEL:
+        case ORIGINAL_GAME:
+            is_inject = false;
+            break;
 
-        default:
+        default: // only 1 value in field
             if (!pkx_get_value(pkm_g3, GEN_THREE, i_field))
             {
+                is_inject = false;
                 break;
             }
 
@@ -85,11 +99,20 @@ void convert_bank3_to_gen1(int box, int slot)
         // 7 8 10 11 12 14 15 16 17 20 21 22 23 24 25 33 34 35 42 44
 
         // fixed:
-        //       - continue: 7, 10
+        //       - continue: 7, 10, 20, 21, 22, 23, 24, 25, 35, 42, 44
         //       - change value:
 
-        sav_inject_pkx(pkm_g1, GEN_ONE, 0, 0, 0);
+        // if (is_inject)
+        // {
+        //     gui_splash("Injecting ...");
+        // }
+        // else
+        // {
+        //     gui_splash("Skipping ...");
+        is_inject = true;
+        // }
     }
+    sav_inject_pkx(pkm_g1, GEN_ONE, 0, 0, 0);
 
     free(pkm_g1);
     free(pkm_g3);

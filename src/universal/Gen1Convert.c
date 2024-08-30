@@ -17,8 +17,7 @@ void convert_bank3_to_gen1(int box, int slot)
         return;
     }
 
-    // pkx_decrypt(pkm_g3, GEN_THREE, 0);
-
+    sav_box_decrypt();
     //* Generate a Gen 1 Pokémon
     pkx_generate(pkm_g1,
                  pkx_get_value(
@@ -31,8 +30,11 @@ void convert_bank3_to_gen1(int box, int slot)
         snprintf(field_id_buffer, sizeof(field_id_buffer), "Convert KPX Field : %d/44", i_field);
         gui_warn(field_id_buffer);
 
-        if (i_field == MOVE || i_field == PP || i_field == PP_UPS)
+        switch (i_field)
         {
+        case MOVE:
+        case PP:
+        case PP_UPS:
             for (int m = 0; m < 4; m++)
             {
                 if (!pkx_get_value(pkm_g3, GEN_THREE, i_field, m))
@@ -50,34 +52,35 @@ void convert_bank3_to_gen1(int box, int slot)
                                   i_field,
                                   m));
             }
+            break;
 
-            continue;
-        }
-
-        if (i_field == LEVEL)
-        {
-            int lv = pkx_get_value(
-                pkm_g3,
-                GEN_THREE,
-                LEVEL);
+        case LEVEL:
             pkx_set_value(pkm_g1,
                           GEN_ONE,
-                          LEVEL, lv);
-        }
+                          LEVEL, 10);
+            break;
 
-        if (!pkx_get_value(pkm_g3, GEN_THREE, i_field) || i_field == POKERUS || i_field == BALL || i_field == ABILITY) // continue special case
-        {
+        case POKERUS:
+        case BALL:
+        case ABILITY:
+            // Skip these fields
             continue;
+
+        default:
+            if (!pkx_get_value(pkm_g3, GEN_THREE, i_field))
+            {
+                break;
+            }
+
+            pkx_set_value(pkm_g1,
+                          GEN_ONE,
+                          i_field,
+                          pkx_get_value(
+                              pkm_g3,
+                              GEN_THREE,
+                              i_field));
+            break;
         }
-
-        pkx_set_value(pkm_g1,
-                      GEN_ONE,
-                      i_field,
-                      pkx_get_value(
-                          pkm_g3,
-                          GEN_THREE,
-                          i_field));
-
         //*Encrypt the Gen 1 Pokémon
         // 7 8 10 11 12 14 15 16 17 20 21 22 23 24 25 33 34 35 42 44
 
@@ -85,12 +88,12 @@ void convert_bank3_to_gen1(int box, int slot)
         //       - continue: 7, 10
         //       - change value:
 
-        pkx_encrypt(pkm_g1, GEN_ONE, 0);
-
         sav_inject_pkx(pkm_g1, GEN_ONE, 0, 0, 0);
     }
+
     free(pkm_g1);
     free(pkm_g3);
+    sav_box_encrypt();
 
     gui_warn("Pokémon is converted to Gen 1!");
 }

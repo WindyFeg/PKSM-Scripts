@@ -16,11 +16,11 @@ bool is_odd(int num)
 
 void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slot)
 {
-    enum Generation gen = GEN_THREE;
+    enum Generation target_gen = GEN_THREE;
 
     char field_id_buffer[50];
     char *pkm_g1 = malloc(pkx_box_size(GEN_ONE));
-    char *pkm_g3 = bank_get_pkx(&gen, bank_box, bank_slot);
+    char *pkm_g3 = bank_get_pkx(&target_gen, bank_box, bank_slot);
     bool is_inject = true;
 
     if (pkm_g3 == NULL || pkm_g1 == NULL)
@@ -29,12 +29,19 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
         return;
     }
 
+    //* Check pkm_g3 is gen 3 or gen 1
+    int pkm_g3_species = pkx_get_value(pkm_g3, GEN_THREE, SPECIES);
+    if (pkm_g3_species == 0)
+    {
+        target_gen = GEN_ONE;
+    }
+
     sav_box_decrypt();
     //* Generate a Gen 1 Pokémon
     pkx_generate(pkm_g1,
                  pkx_get_value(
                      pkm_g3,
-                     GEN_THREE,
+                     target_gen,
                      SPECIES));
 
     //! IV Conversion calculation
@@ -59,12 +66,12 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
     int g3_hp_bin[4] = {0, 0, 0, 0};
     int g1_hp_bin[4] = {0, 0, 0, 0};
 
-    pkm_g3_spAtk = floor(pkx_get_value(pkm_g3, GEN_THREE, IV_SPATK) / 2);
-    pkm_g3_spDef = floor(pkx_get_value(pkm_g3, GEN_THREE, IV_SPDEF) / 2);
-    pkm_g3_speed = floor(pkx_get_value(pkm_g3, GEN_THREE, IV_SPEED) / 2);
-    pkm_g3_atk = floor(pkx_get_value(pkm_g3, GEN_THREE, IV_ATK) / 2);
-    pkm_g3_def = floor(pkx_get_value(pkm_g3, GEN_THREE, IV_DEF) / 2);
-    pkm_g3_hp = floor(pkx_get_value(pkm_g3, GEN_THREE, IV_HP) / 2);
+    pkm_g3_spAtk = floor(pkx_get_value(pkm_g3, target_gen, IV_SPATK) / 2);
+    pkm_g3_spDef = floor(pkx_get_value(pkm_g3, target_gen, IV_SPDEF) / 2);
+    pkm_g3_speed = floor(pkx_get_value(pkm_g3, target_gen, IV_SPEED) / 2);
+    pkm_g3_atk = floor(pkx_get_value(pkm_g3, target_gen, IV_ATK) / 2);
+    pkm_g3_def = floor(pkx_get_value(pkm_g3, target_gen, IV_DEF) / 2);
+    pkm_g3_hp = floor(pkx_get_value(pkm_g3, target_gen, IV_HP) / 2);
 
     pkm_g1_spAtk = pkm_g3_spAtk > pkm_g3_spDef ? pkm_g3_spAtk : pkm_g3_spDef;
     pkm_g1_spDef = pkm_g1_spAtk;
@@ -106,14 +113,14 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
             int move_count = 0;
             for (int m = 0; m < 4; m++)
             {
-                if (!pkx_get_value(pkm_g3, GEN_THREE, i_field, m))
+                if (!pkx_get_value(pkm_g3, target_gen, i_field, m))
                 {
                     break;
                 }
 
                 int skill_id = pkx_get_value(
                     pkm_g3,
-                    GEN_THREE,
+                    target_gen,
                     i_field,
                     m);
 
@@ -156,7 +163,7 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
                           i_field,
                           pkx_get_value(
                               pkm_g3,
-                              GEN_THREE,
+                              target_gen,
                               i_field));
 
             break;
@@ -168,8 +175,6 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
     free(pkm_g1);
     free(pkm_g3);
     sav_box_encrypt();
-
-    gui_warn("Pokémon is converted to Gen 1!");
 }
 
 int main(int argc, char **argv)
@@ -206,7 +211,10 @@ int main(int argc, char **argv)
             bank_current_slot++;
 
             if (bank_current_slot == 30)
+            {
+                gui_warn("Pokémon is converted to Gen 1!");
                 return 0;
+            }
         }
     }
 

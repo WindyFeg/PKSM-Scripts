@@ -54,7 +54,7 @@ void convert_bank3_to_gen1(int box, int slot)
             continue;
         }
 
-        if (!pkx_get_value(pkm_g3, GEN_THREE, i_field) || i_field == POKERUS || i_field == BALL) // continue special case
+        if (!pkx_get_value(pkm_g3, GEN_THREE, i_field) || i_field == POKERUS || i_field == BALL || i_field == ABILITY) // continue special case
         {
             continue;
         }
@@ -70,7 +70,9 @@ void convert_bank3_to_gen1(int box, int slot)
         //*Encrypt the Gen 1 Pokémon
         // 7 8 10 11 12 14 15 16 17 20 21 22 23 24 25 33 34 35 42 44
 
-        // fixed: 7,
+        // fixed:
+        //       - continue: 7, 10
+        //       - change value:
 
         pkx_encrypt(pkm_g1, GEN_ONE, 0);
 

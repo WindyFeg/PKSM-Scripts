@@ -117,12 +117,12 @@ void convert_bank3_to_gen1(int box, int slot)
                     i_field,
                     m);
 
-                if (skill_id != 0)
+                if (skill_id != 0 && skill_id < 166)
                 {
                     pkx_set_value(pkm_g1,
                                   GEN_ONE,
                                   i_field,
-                                  move_count, skill_id > 165 ? 0 : skill_id);
+                                  move_count, skill_id);
                     move_count++;
                 }
             }

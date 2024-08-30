@@ -31,25 +31,6 @@ void convert_bank3_to_gen1(int box, int slot)
         snprintf(field_id_buffer, sizeof(field_id_buffer), "Convert KPX Field : %d/44", i_field);
         gui_warn(field_id_buffer);
 
-        if (i_field == BALL)
-        {
-            pkx_set_value(pkm_g1,
-                          GEN_ONE,
-                          BALL,
-                          0);
-        }
-
-        if (i_field == LEVEL)
-        {
-            pkx_set_value(pkm_g1,
-                          GEN_ONE,
-                          LEVEL,
-                          pkx_get_value(
-                              pkm_g3,
-                              GEN_THREE,
-                              LEVEL));
-        }
-
         if (i_field == MOVE || i_field == PP || i_field == PP_UPS)
         {
             for (int m = 0; m < 4; m++)
@@ -73,7 +54,18 @@ void convert_bank3_to_gen1(int box, int slot)
             continue;
         }
 
-        if (!pkx_get_value(pkm_g3, GEN_THREE, i_field) || i_field == POKERUS || i_field == BALL)
+        if (i_field == LEVEL)
+        {
+            pkx_set_value(pkm_g1,
+                          GEN_ONE,
+                          LEVEL,
+                          pkx_get_value(
+                              pkm_g3,
+                              GEN_THREE,
+                              LEVEL));
+        }
+
+        if (!pkx_get_value(pkm_g3, GEN_THREE, i_field) || i_field == POKERUS || i_field == BALL) // continue special case
         {
             continue;
         }
@@ -88,6 +80,8 @@ void convert_bank3_to_gen1(int box, int slot)
 
         //*Encrypt the Gen 1 Pokémon
         // 7 8 10 11 12 14 15 16 17 20 21 22 23 24 25 33 34 35 42 44
+
+        // fixed: 7,
 
         pkx_encrypt(pkm_g1, GEN_ONE, 0);
 

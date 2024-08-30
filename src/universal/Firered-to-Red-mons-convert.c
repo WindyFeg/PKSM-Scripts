@@ -103,7 +103,7 @@ void convert_bank3_to_gen1(int box, int slot)
                    // move: 0 -> 165
         case PP:   // always in range 0 -> 40
         case PP_UPS:
-
+            int move_count = 0;
             for (int m = 0; m < 4; m++)
             {
                 if (!pkx_get_value(pkm_g3, GEN_THREE, i_field, m))
@@ -117,29 +117,16 @@ void convert_bank3_to_gen1(int box, int slot)
                     i_field,
                     m);
 
-                pkx_set_value(pkm_g1,
-                              GEN_ONE,
-                              i_field,
-                              m, skill_id > 165 ? 0 : skill_id);
+                if (skill_id != 0)
+                {
+                    pkx_set_value(pkm_g1,
+                                  GEN_ONE,
+                                  i_field,
+                                  move_count, skill_id > 165 ? 0 : skill_id);
+                    move_count++;
+                }
             }
             break;
-
-        case POKERUS: // field that gen_1 or both gen1 & gen3 doesn't have
-        case BALL:
-        case ABILITY:
-        case NICKNAME:
-        case EGG_DAY:
-        case EGG_MONTH:
-        case EGG_YEAR:
-        case MET_DAY:
-        case MET_MONTH:
-        case MET_YEAR:
-        case SPECIES:
-        case NATURE:
-        case MET_LEVEL:
-        case ORIGINAL_GAME:
-            break;
-
         case IV_HP:
             break;
         case IV_ATK:
@@ -159,7 +146,7 @@ void convert_bank3_to_gen1(int box, int slot)
             break;
 
         default: // only 1 value in field
-            if (!pkx_get_value(pkm_g3, GEN_THREE, i_field))
+            if (!pkx_get_value(pkm_g1, GEN_ONE, i_field))
             {
                 break;
             }
@@ -175,6 +162,7 @@ void convert_bank3_to_gen1(int box, int slot)
             break;
         }
     }
+
     sav_inject_pkx(pkm_g1, GEN_ONE, 0, 0, 0);
 
     free(pkm_g1);

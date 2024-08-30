@@ -17,7 +17,7 @@ void convert_bank3_to_gen1(int box, int slot)
         return;
     }
 
-    sav_box_decrypt();
+    // sav_box_decrypt();
     //* Generate a Gen 1 Pokémon
     pkx_generate(pkm_g1,
                  pkx_get_value(
@@ -29,6 +29,11 @@ void convert_bank3_to_gen1(int box, int slot)
     {
         snprintf(field_id_buffer, sizeof(field_id_buffer), "Convert KPX Field : %d/44", i_field);
         gui_warn(field_id_buffer);
+
+        if (!pkx_get_value(pkm_g3, GEN_THREE, i_field))
+        {
+            continue;
+        }
 
         switch (i_field)
         {
@@ -52,7 +57,8 @@ void convert_bank3_to_gen1(int box, int slot)
                                   i_field,
                                   m));
             }
-            break;
+            // break;
+            continue;
 
         case LEVEL:
             pkx_set_value(pkm_g1,
@@ -67,11 +73,6 @@ void convert_bank3_to_gen1(int box, int slot)
             continue;
 
         default:
-            if (!pkx_get_value(pkm_g3, GEN_THREE, i_field))
-            {
-                break;
-            }
-
             pkx_set_value(pkm_g1,
                           GEN_ONE,
                           i_field,
@@ -88,7 +89,7 @@ void convert_bank3_to_gen1(int box, int slot)
         //       - continue: 7, 10
         //       - change value:
 
-        sav_inject_pkx(pkm_g1, GEN_ONE, 0, 0, 0);
+        // sav_inject_pkx(pkm_g1, GEN_ONE, 0, 0, 0);
     }
 
     free(pkm_g1);

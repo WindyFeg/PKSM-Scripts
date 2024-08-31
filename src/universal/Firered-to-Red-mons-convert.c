@@ -211,6 +211,17 @@ int main(int argc, char **argv)
     int bank_current_box = 0;
     int bank_current_slot = 0;
 
+    struct item_dictionary
+    {
+        int id_item_g3;
+        int id_item_g1;
+    };
+
+    struct item_dictionary item_dict[] = {
+        {0, 0},
+        {1, 1},
+    };
+
     for (int sav_box = 0; sav_box < 2; sav_box++)
     {
         for (int sav_slot = 0; sav_slot < 20; sav_slot++)

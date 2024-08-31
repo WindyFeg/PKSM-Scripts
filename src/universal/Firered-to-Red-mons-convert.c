@@ -5,6 +5,12 @@
 #include <string.h>
 #include <stdbool.h>
 
+struct item_dictionary
+{
+    int id_item_g3;
+    int id_item_g1;
+};
+
 bool is_odd(int num)
 {
     if (num % 2 == 0)
@@ -134,6 +140,40 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
                 }
             }
             break;
+
+        case SHINY: // shiny: 0 -> 1
+            // IVs in Speed, Defense and Special are all equal to 10.
+            // Attack IV is equal to 2, 3, 6, 7, 10, 11, 14, or 15.
+            int is_shiny = pkx_get_value(pkm_g3, target_gen, SHINY);
+            if (is_shiny)
+            {
+                pkm_g1_atk = pkm_g1_atk + 2;
+                switch (pkm_g1_atk)
+                {
+                case 1:
+                case 4:
+                case 5:
+                case 8:
+                case 9:
+                case 12:
+                case 13:
+                    pkm_g1_atk = pkm_g1_atk + 2;
+                    break;
+                default:
+                    break;
+                }
+                pkm_g1_def = 10;
+                pkm_g1_speed = 10;
+                pkm_g1_spAtk = 10;
+                pkm_g1_spDef = 10;
+                pkx_set_value(pkm_g1, GEN_ONE, SHINY, 1);
+                break;
+            }
+            else
+            {
+                pkm_g1_atk = pkm_g1_atk - 2;
+                pkx_set_value(pkm_g1, GEN_ONE, SHINY, 0);
+            }
         case ITEM: // item: 0 -> 375
             int item_id = pkx_get_value(pkm_g3, target_gen, ITEM);
             pkx_set_value(pkm_g1,
@@ -146,7 +186,6 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
                           GEN_ONE,
                           BALL, ball_id > 5 ? 3 : ball_id);
             break;
-
         case IV_HP:
             break;
         case IV_ATK:
@@ -178,13 +217,26 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
                               pkm_g3,
                               target_gen,
                               i_field));
-
             break;
         }
     }
 
+    // Check Valid
+    if (!pkx_is_valid(pkm_g1, GEN_ONE))
+    {
+        snprintf(field_id_buffer, sizeof(field_id_buffer), "Failed to convert Pokémon \nAt slot %d to Gen 1", bank_slot);
+        gui_warn(field_id_buffer);
+
+        // snprintf(field_id_buffer, sizeof(field_id_buffer), "Would you still want to Inject invalid  \n Pokemon at %d to Gen 1", bank_slot);
+        // int choice = gui_choice(field_id_buffer);
+        // if (!choice)
+        // {
+        //     pkx_set_value(pkm_g1, GEN_ONE, SPECIES, 0);
+        // }
+    }
     sav_inject_pkx(pkm_g1, GEN_ONE, sav_box, sav_slot, 0);
 
+    //* Free memory
     free(pkm_g1);
     free(pkm_g3);
     sav_box_encrypt();
@@ -210,17 +262,6 @@ int main(int argc, char **argv)
 
     int bank_current_box = 0;
     int bank_current_slot = 0;
-
-    struct item_dictionary
-    {
-        int id_item_g3;
-        int id_item_g1;
-    };
-
-    struct item_dictionary item_dict[] = {
-        {0, 0},
-        {1, 1},
-    };
 
     for (int sav_box = 0; sav_box < 2; sav_box++)
     {

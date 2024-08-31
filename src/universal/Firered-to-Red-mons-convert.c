@@ -704,7 +704,7 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
             pkx_set_value(pkm_g1,
                           GEN_ONE,
                           LEVEL,
-                          level >= 50 ? level : level + 10);
+                          level > 50 ? level : level + 10);
             break;
 
         case EV_HP:

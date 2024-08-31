@@ -492,10 +492,11 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
 
         switch (i_field)
         {
+        case PP: // always in range 0 -> 40
+        case PP_UPS:
+            break;
         case MOVE: // special case (two values in field)
                    // move: 0 -> 165
-        case PP:   // always in range 0 -> 40
-        case PP_UPS:
             int move_count = 0;
             for (int m = 0; m < 4; m++)
             {
@@ -509,6 +510,11 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
                     target_gen,
                     i_field,
                     m);
+                int pp = pkx_get_value(
+                    pkm_g3,
+                    target_gen,
+                    PP,
+                    m);
 
                 if (skill_id != 0 && skill_id < 166)
                 {
@@ -516,6 +522,10 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
                                   GEN_ONE,
                                   i_field,
                                   move_count, skill_id);
+                    pkx_set_value(pkm_g1,
+                                  GEN_ONE,
+                                  PP,
+                                  move_count, pp);
                     move_count++;
                 }
             }

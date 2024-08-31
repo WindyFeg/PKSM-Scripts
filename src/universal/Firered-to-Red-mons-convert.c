@@ -20,6 +20,12 @@ bool is_odd(int num)
     return true;
 }
 
+int GetItemIDFromGen3ToGen1(int item_id_g3)
+{
+    // TODO
+    return 0;
+}
+
 void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slot)
 {
     enum Generation target_gen = GEN_THREE;
@@ -175,10 +181,10 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
                 pkx_set_value(pkm_g1, GEN_ONE, SHINY, 0);
             }
         case ITEM: // item: 0 -> 375
-            int item_id = pkx_get_value(pkm_g3, target_gen, ITEM);
+            int item_id_g3 = pkx_get_value(pkm_g3, target_gen, ITEM);
             pkx_set_value(pkm_g1,
                           GEN_ONE,
-                          ITEM, item_id > 255 ? 0 : item_id);
+                          ITEM, GetItemIDFromGen3ToGen1(item_id_g3));
             break;
         case BALL: // ball: 0 -> 4
             int ball_id = pkx_get_value(pkm_g3, target_gen, BALL);

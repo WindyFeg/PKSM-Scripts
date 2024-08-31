@@ -43,7 +43,7 @@ int GetMovePPFromGen3ToGen1(int move_id_gen3)
                              15,
                              20,
                              20,
-                             25,
+                             10, // 25 -> 10
                              20,
                              30,
                              5,
@@ -92,7 +92,7 @@ int GetMovePPFromGen3ToGen1(int move_id_gen3)
                              20,
                              20,
                              15,
-                             25,
+                             20, // 25 -> 20
                              15,
                              10,
                              20,
@@ -694,6 +694,17 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
                     move_count++;
                 }
             }
+            break;
+
+        case LEVEL:
+            int level = pkx_get_value(
+                pkm_g3,
+                target_gen,
+                LEVEL);
+            pkx_set_value(pkm_g1,
+                          GEN_ONE,
+                          LEVEL,
+                          level >= 50 ? level : level + 10);
             break;
 
         case OT_NAME:

@@ -521,6 +521,22 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
             }
             break;
 
+        case OT_NAME:
+        case TID:
+            pkx_set_value(pkm_g1,
+                          GEN_ONE,
+                          TID,
+                          pkx_get_value(pkm_g3,
+                                        GEN_THREE,
+                                        TID));
+            pkx_set_value(pkm_g1,
+                          GEN_ONE,
+                          OT_NAME,
+                          pkx_get_value(pkm_g3,
+                                        GEN_THREE,
+                                        OT_NAME));
+            break;
+
         case SHINY: // shiny: 0 -> 1
             // IVs in Speed, Defense and Special are all equal to 10.
             // Attack IV is equal to 2, 3, 6, 7, 10, 11, 14, or 15.
@@ -602,19 +618,6 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
         }
     }
 
-    // Check Valid
-    if (!pkx_is_valid(pkm_g1, GEN_ONE))
-    {
-        snprintf(field_id_buffer, sizeof(field_id_buffer), "Failed to convert Pokémon \nAt slot %d to Gen 1", bank_slot);
-        gui_warn(field_id_buffer);
-
-        // snprintf(field_id_buffer, sizeof(field_id_buffer), "Would you still want to Inject invalid  \n Pokemon at %d to Gen 1", bank_slot);
-        // int choice = gui_choice(field_id_buffer);
-        // if (!choice)
-        // {
-        //     pkx_set_value(pkm_g1, GEN_ONE, SPECIES, 0);
-        // }
-    }
     sav_inject_pkx(pkm_g1, GEN_ONE, sav_box, sav_slot, 0);
 
     //* Free memory
@@ -639,12 +642,17 @@ int main(int argc, char **argv)
         "PK1", "https://cdn.sigkill.tech/dex/pk1.txt", // contains 1-151
     };
 
-    gui_warn("This script will convert entire Bank 1 (Firered - G3) to Gen 1 (Red/Blue - G1).");
+    gui_warn("This script will convert from \nPKSM Bank (Firered - G3) to Gen 1 (Red/Blue - G1).");
 
     int bank_current_box = 0;
     int bank_current_slot = 0;
+    unsigned int n_mons;
 
-    for (int sav_box = 0; sav_box < 2; sav_box++)
+    gui_numpad(&n_mons, "Please Input Number of pokemon you want to convert\ncount from Bank 1 slot 0:", 151);
+
+    gui_warn("Converting please wait...");
+
+    for (int sav_box = 0; sav_box < 12; sav_box++)
     {
         for (int sav_slot = 0; sav_slot < 20; sav_slot++)
         {
@@ -656,7 +664,7 @@ int main(int argc, char **argv)
 
             bank_current_slot++;
 
-            if (bank_current_slot == 30)
+            if (bank_current_slot == n_mons)
             {
                 gui_warn("Pokémon is converted to Gen 1!");
                 return 0;

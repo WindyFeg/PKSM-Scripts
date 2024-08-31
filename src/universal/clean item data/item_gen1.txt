@@ -1,0 +1,435 @@
+0...(None)
+
+91...Amulet Coin
+
+9...Antidote
+
+12...Awakening
+
+133...Basement Key
+
+173...Berry
+
+139...Berry Juice
+
+152...Berserk Gene
+
+7...Bicycle
+
+87...Big Mushroom
+
+111...Big Pearl
+
+83...Bitter Berry
+
+98...Black Belt
+
+102...Black Glasses
+
+99...Blk Apricorn
+
+89...Blu Apricom
+
+187...Bluesky Mail
+
+180...Brick Piece
+
+3...BrightPowder
+
+10...Burn Heal
+
+79...Burnt Berry
+
+31...Calcium
+
+29...Carbos
+
+127...Card Key
+
+138...Charcoal
+
+94...Cleanse Tag
+
+54...Coin Case
+
+44...Dire Hit
+
+144...Dragon Fang
+
+151...Dragon Scale
+
+65...Elixer
+
+122...Energy Root
+
+121...Energy Powder
+
+185...Eon Mail
+
+19...Escape Rope
+
+63...Ether
+
+112...Everstone
+
+57...Exp Share
+
+161...Fast Ball
+
+22...Fire Stone
+
+158...Flower Mail
+
+119...Focus Band
+
+46...Fresh Water
+
+164...Friend Ball
+
+38...Full Heal
+
+14...Full Restore
+
+174...Gold Berry
+
+75...Gold Leaf
+
+59...Good Rod
+
+168...Gorgeous Box
+
+4...Great Ball
+
+93...Grn Apricorn
+
+41...Guard Spec.
+
+243...HM01
+
+244...HM02
+
+245...HM03
+
+246...HM04
+
+247...HM05
+
+248...HM06
+
+249...HM07
+
+26...HP Up
+
+125...Hard Stone
+
+123...Heal Powder
+
+157...Heavy Ball
+
+16...Hyper Potion
+
+80...Ice Berry
+
+11...Ice Heal
+
+28...Iron
+
+55...Itemfinder
+
+82...King's Rock
+
+34...Leaf Stone
+
+146...Leftovers
+
+48...Lemonade
+
+159...Level Ball
+
+163...Light Ball
+
+182...Litebluemail
+
+130...Lost Item
+
+166...Love Ball
+
+184...Lovely Mail
+
+126...Lucky Egg
+
+30...Lucky Punch
+
+160...Lure Ball
+
+128...Machine Part
+
+108...Magnet
+
+1...Master Ball
+
+21...Max Elixer
+
+64...Max Ether
+
+15...Max Potion
+
+43...Max Repel
+
+40...Max Revive
+
+143...Metal Coat
+
+35...Metal Powder
+
+84...Mint Berry
+
+117...Miracle Seed
+
+109...Miracle Berry
+
+189...Mirage Mail
+
+72...Moomoo Milk
+
+165...Moon Ball
+
+8...Moon Stone
+
+186...Morph Mail
+
+188...Music Mail
+
+69...Mystery Egg
+
+150...MysteryBerry
+
+95...Mystic Water
+
+107...NeverMeltice
+
+167...Normal Box
+
+36...Nugget
+
+58...Old Rod
+
+62...PP Up
+
+78...PRZCure Berry
+
+74...PSNCure Berry
+
+13...Parlyz Heal
+
+134...Pass
+
+110...Pearl
+
+104...Pink Bow
+
+101...Pnk Apricorn
+
+81...Poison Barb
+
+5...Poké Ball
+
+37...Poké Doll
+
+170...Polkadot Bow
+
+183...Portraitmail
+
+18...Potion
+
+27...Protein
+
+73...Quick Claw
+
+114...RageCandyBar
+
+178...Rainbow Wing
+
+32...Rare Candy
+
+85...Red Apricorn
+
+66...Red Scale
+
+20...Repel
+
+124...Revival Herb
+
+39...Revive
+
+68...S.S. Ticket
+
+156...Sacred Ash
+
+140...Scope Lens
+
+67...SecretPotion
+
+77...Sharp Beak
+
+60...Silver Leaf
+
+71...Silver Wing
+
+88...Silver Powder
+
+103...Slowpoke Tail
+
+106...Smoke Ball
+
+47...Soda Pop
+
+76...Soft Sand
+
+113...Spell Tag
+
+175...SquirtBottle
+
+132...Star Piece
+
+131...Stardust
+
+105...Stick
+
+169...Sun Stone
+
+17...Super Potion
+
+42...Super Repel
+
+61...Super Rod
+
+181...Surf Mail
+
+191...TM01
+
+192...TM02
+
+193...TM03
+
+194...TM04
+
+196...TM05
+
+197...TM06
+
+198...TM07
+
+199...TM08
+
+200...TM09
+
+201...TM10
+
+202...TM11
+
+203...TM12
+
+204...TM13
+
+205...TM14
+
+206...TM15
+
+207...TM16
+
+208...TM17
+
+209...TM18
+
+210...TM19
+
+211...TM20
+
+212...TM21
+
+213...TM22
+
+214...TM23
+
+215...TM24
+
+216...TM25
+
+217...TM26
+
+218...TM27
+
+219...TM28
+
+221...TM29
+
+222...TM30
+
+223...TM31
+
+224...TM32
+
+225...TM33
+
+226...TM34
+
+227...TM35
+
+228...TM36
+
+229...TM37
+
+230...TM38
+
+231...TM39
+
+232...TM40
+
+233...TM41
+
+234...TM42
+
+235...TM43
+
+236...TM44
+
+237...TM45
+
+238...TM46
+
+239...TM47
+
+240...TM48
+
+241...TM49
+
+242...TM50
+
+118...Thick Club
+
+23...Thunder Stone
+
+86...Tiny Mushroom
+
+96...TwistedSpoon
+
+2...Ultra Ball
+
+172...Up-Grade
+
+24...Water Stone
+
+97...Wht Apricorn
+
+33...X Accuracy
+
+49...X Attack
+
+51...X Defend
+
+53...X Special
+
+52...X Speed
+
+92...Ylw Apricorn

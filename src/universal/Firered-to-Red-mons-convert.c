@@ -730,8 +730,6 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
                           GEN_ONE,
                           LEVEL,
                           level > 50 ? level : level + 10);
-<<<<<<< HEAD
-=======
             break;
 
         case EV_HP:
@@ -745,7 +743,6 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
                           GEN_ONE,
                           i_field,
                           ev);
->>>>>>> 5d5357894a524843b778fbae9ee0f395539db4e5
             break;
 
         case OT_NAME:

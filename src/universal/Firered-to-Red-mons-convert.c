@@ -730,6 +730,22 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
                           GEN_ONE,
                           LEVEL,
                           level > 50 ? level : level + 10);
+<<<<<<< HEAD
+=======
+            break;
+
+        case EV_HP:
+        case EV_ATK:
+        case EV_DEF:
+        case EV_SPATK:
+        case EV_SPDEF:
+        case EV_SPEED:
+            int ev = pkx_get_value(pkm_g3, target_gen, i_field);
+            pkx_set_value(pkm_g1,
+                          GEN_ONE,
+                          i_field,
+                          ev);
+>>>>>>> 5d5357894a524843b778fbae9ee0f395539db4e5
             break;
 
         case OT_NAME:

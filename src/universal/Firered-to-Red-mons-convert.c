@@ -569,6 +569,31 @@ int GetItemIDFromGen3ToGen1(int item_id_gen3)
     return item_id_gen1[item_id_gen3];
 }
 
+int gender_determine(char *pkx_g1, char *pkx_g3)
+{
+    int gender_g3 = pkx_get_value(pkx_g3, GEN_THREE, GENDER);
+    int gender_g1 = pkx_get_value(pkx_g1, GEN_ONE, GENDER);
+    int pkm_g1_spAtk = pkx_get_value(pkx_g1, GEN_ONE, IV_ATK);
+
+    if (gender_g1 == gender_g3)
+    {
+        return pkm_g1_spAtk;
+    }
+
+    // GENDER = 0: MALE
+    if (gender_g1 == 0)
+    {
+        pkx_set_value(pkx_g1, GEN_ONE, IV_ATK, pkm_g1_spAtk - 2);
+    }
+    // GENDER = 1: FEMALE
+    else if (gender_g1 == 1)
+    {
+        pkx_set_value(pkx_g1, GEN_ONE, IV_ATK, pkm_g1_spAtk + 2);
+    }
+
+    return gender_determine(pkx_g1, pkx_g3);
+}
+
 void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slot)
 {
     enum Generation target_gen = GEN_THREE;
@@ -704,7 +729,7 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
             pkx_set_value(pkm_g1,
                           GEN_ONE,
                           LEVEL,
-                          level >= 50 ? level : level + 10);
+                          level > 50 ? level : level + 10);
             break;
 
         case OT_NAME:
@@ -803,9 +828,10 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
             break;
         }
     }
+    // Fix gender
+    pkm_g1_atk = gender_determine(pkm_g1, pkm_g3);
 
     sav_inject_pkx(pkm_g1, GEN_ONE, sav_box, sav_slot, 0);
-
     //* Free memory
     free(pkm_g1);
     free(pkm_g3);
@@ -836,7 +862,7 @@ int main(int argc, char **argv)
 
     gui_numpad(&n_mons, "Please Input Number of pokemon you want to convert\ncount from Bank 1 slot 0:", 151);
 
-    gui_warn("Converting please wait...");
+    gui_splash("Converting please wait...");
 
     for (int sav_box = 0; sav_box < 12; sav_box++)
     {

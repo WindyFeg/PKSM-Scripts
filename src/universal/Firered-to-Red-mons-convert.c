@@ -706,7 +706,15 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
                     m);
                 int pp = GetMovePPFromGen3ToGen1(skill_id);
 
-                if (skill_id != 0 && skill_id < 166)
+                // Remove HM moves
+                if (skill_id != 0 &&
+                    skill_id != 15 &&
+                    skill_id != 19 &&
+                    skill_id != 57 &&
+                    skill_id != 70 &&
+                    skill_id != 127 &&
+                    skill_id != 148 &&
+                    skill_id < 166)
                 {
                     pkx_set_value(pkm_g1,
                                   GEN_ONE,
@@ -729,7 +737,7 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
             pkx_set_value(pkm_g1,
                           GEN_ONE,
                           LEVEL,
-                          level > 50 ? level : level + 10);
+                          level > 50 ? level : level);
             break;
 
         case EV_HP:
@@ -739,6 +747,10 @@ void convert_bank3_to_gen1(int bank_box, int bank_slot, int sav_box, int sav_slo
         case EV_SPDEF:
         case EV_SPEED:
             int ev = pkx_get_value(pkm_g3, target_gen, i_field);
+            if (target_gen == GEN_THREE)
+            {
+                ev = ev * ev;
+            }
             pkx_set_value(pkm_g1,
                           GEN_ONE,
                           i_field,
